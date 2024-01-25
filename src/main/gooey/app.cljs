@@ -3,52 +3,62 @@
             [cljsjs.react]))
 
 (defn app []
-  [:div {:class "container my-5"}
-    [:div {:class "row"}
-      [:div {:class "col-12"}
-        [:h1 {:class "display-1 fw-bolder"} "Gooey"]
-      ]
-    ]
-    [:div {:class "row"}
-      [:div {:class "col-12"}
-        [:div {:class "mt-5"}
-          [:h2 {:id "document" :class "display-4 fw-bolder"} 
-            "Document"
+  (let [parser-output (reagent/atom "")]
+    (fn []
+      [:div {:class "container my-5"}
+        [:div {:class "row"}
+          [:div {:class "col-12"}
+            [:h1 {:class "display-1 fw-bolder"} "Gooey"]
           ]
-          [:textarea {:class "form-control" :rows "20"}
-
+        ]
+        [:div {:class "row"}
+          [:div {:class "col-12"}
+            [:div {:class "mt-5"}
+              [:h2 {:id "document" :class "display-4 fw-bolder"} 
+                "Document"
+              ]
+            ]
+          ]
+        ]
+        [:div {:class "row"}
+          [:div {:class "col-12"}
+            [:div {:class "mt-5"}
+              [:h2 {:id "document" :class "display-4 fw-bolder"} 
+                "Parser"
+              ]
+            ]
+          ]
+        ]
+        [:div {:class "row"}
+          [:div {:class "col-12"}
+            [:div {:class "mt-5"}
+              [:h2 {:id "document" :class "display-4 fw-bolder"} 
+                "Output"
+              ]
+              [:textarea 
+                {
+                  :class "form-control"
+                  :rows "20"
+                  :value @parser-output
+                  :on-change #(reset! parser-output (-> % .-target .-value))
+                }
+              ]
+              [:p "u entered: " @parser-output]
+            ]
+          ]
+        ]
+        [:div {:class "row"}
+          [:div {:class "col-12"}
+            [:div {:class "mt-5"}
+              [:h2 {:id "document" :class "display-4 fw-bolder"} 
+                "Interface"
+              ]
+            ]
           ]
         ]
       ]
-    ]
-    [:div {:class "row"}
-      [:div {:class "col-12"}
-        [:div {:class "mt-5"}
-          [:h2 {:id "document" :class "display-4 fw-bolder"} 
-            "Parser"
-          ]
-        ]
-      ]
-    ]
-    [:div {:class "row"}
-      [:div {:class "col-12"}
-        [:div {:class "mt-5"}
-          [:h2 {:id "document" :class "display-4 fw-bolder"} 
-            "Output"
-          ]
-        ]
-      ]
-    ]
-    [:div {:class "row"}
-      [:div {:class "col-12"}
-        [:div {:class "mt-5"}
-          [:h2 {:id "document" :class "display-4 fw-bolder"} 
-            "Interface"
-          ]
-        ]
-      ]
-    ]
-  ]
+    )
+  )
 )
 
 (defn mount-root []
