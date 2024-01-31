@@ -69,6 +69,22 @@
   )
 )
 
+(defn build-tree [data parent-id]
+  (let [children (filter #(= (:parent_id %) parent-id) data)]
+    (if (seq children)
+      (doall
+        (println "children not empty")
+        (map (fn [child]
+               (assoc child :children (build-tree data (:id child)))) children)
+      )
+      (doall
+        (println "children is empty")
+        []
+      )
+    )
+  )
+)
+
 (defn chat-page []
   (try
     (let [chat-json (js/JSON.parse @parser-output)]
@@ -78,19 +94,23 @@
           (js/console.log "Keys for item: " item-keys)
         )
       )
-      [:div
-        [:h2 "Chat"]
-        (for [item chat-json :let [index (.indexOf chat-json item)]]
-          (doall
-            (println "rendering item: " item)
-            [:div {:key index :class "item"}
-              [:h1 index]
-              [:h3 (str "ID: " (.-id item))]
-              [:p (str "content " (.-content item))]
-            ]
+      (let [tree (build-tree (js->clj chat-json :keywordize-keys true) "")]
+        (js/console.log "tree:" (clj->js tree))
+        [:div
+          [:h2 "Chat"]
+          [:h2 processed-json]
+          (for [item chat-json :let [index (.indexOf chat-json item)]]
+            (doall
+              ;(println "rendering item: " item)
+              [:div {:key index :class "item"}
+                [:h1 index]
+                [:h3 (str "ID: " (.-id item))]
+                [:p (str "content " (.-content item))]
+              ]
+            )
           )
-        )
-      ]
+        ]
+      )
     )
     (catch :default e
       (println "Failed to parse JSON:" (.-message e))
