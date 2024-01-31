@@ -81,7 +81,7 @@
 
 (defn chat-item [node]
   [:div
-    [:span (str (:content node))]
+    [:p (str (:content node))]
     (when-let [children (:children node)]
       (map chat-item children)
     )
@@ -99,11 +99,17 @@
       )
       (let [tree (build-tree (js->clj chat-json :keywordize-keys true) "")]
         (js/console.log "tree:" (clj->js tree))
-        [:div
-          [:h2 "Chat"]
-          (for [item tree :let [index (.indexOf tree item)]]
-            [chat-item item]
-          )
+        [:div {:class "container my-5"}
+          [:div {:class "row"}
+            [:div {:class "col-12"}
+              [:h2 "Chat"]
+              (for [item tree :let [index (.indexOf tree item)]]
+                [:div {:class "card card-body mb-5"}
+                  [chat-item item]
+                ]
+              )
+            ]
+          ]
         ]
       )
     )
