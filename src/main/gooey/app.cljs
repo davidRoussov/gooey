@@ -7,67 +7,77 @@
   )
 )
 
+(defonce parser-output (r/atom ""))
+
 (defn home-page []
-  (let [parser-output (r/atom "")]
-    (fn []
-      [:div {:class "container my-5"}
-        [:div {:class "row"}
-          [:div {:class "col-12"}
-            [:h1 {:class "display-1 fw-bolder"} "Gooey"]
-          ]
+  (fn []
+    [:div {:class "container my-5"}
+      [:div {:class "row"}
+        [:div {:class "col-12"}
+          [:h1 {:class "display-1 fw-bolder"} "Gooey"]
         ]
-        [:div {:class "row"}
-          [:div {:class "col-12"}
-            [:div {:class "mt-5"}
-              [:h2 {:id "document" :class "display-4 fw-bolder"} 
-                "Document"
-              ]
-            ]
-          ]
-        ]
-        [:div {:class "row"}
-          [:div {:class "col-12"}
-            [:div {:class "mt-5"}
-              [:h2 {:id "document" :class "display-4 fw-bolder"} 
-                "Parser"
-              ]
-            ]
-          ]
-        ]
-        [:div {:class "row"}
-          [:div {:class "col-12"}
-            [:div {:class "mt-5"}
-              [:h2 {:id "document" :class "display-4 fw-bolder"} 
-                "Output"
-              ]
-              [:textarea 
-                {
-                  :class "form-control"
-                  :rows "20"
-                  :value @parser-output
-                  :on-change #(reset! parser-output (-> % .-target .-value))
-                }
-              ]
-            ]
-          ]
-        ]
-        [:div {:class "row"}
-          [:div {:class "col-12"}
-            [:div {:class "mt-5"}
-              [:h2 {:id "document" :class "display-4 fw-bolder"} 
-                "Interface"
-              ]
+      ]
+      [:div {:class "row"}
+        [:div {:class "col-12"}
+          [:div {:class "mt-5"}
+            [:h2 {:id "document" :class "display-4 fw-bolder"} 
+              "Document"
             ]
           ]
         ]
       ]
-    )
+      [:div {:class "row"}
+        [:div {:class "col-12"}
+          [:div {:class "mt-5"}
+            [:h2 {:id "document" :class "display-4 fw-bolder"} 
+              "Parser"
+            ]
+          ]
+        ]
+      ]
+      [:div {:class "row"}
+        [:div {:class "col-12"}
+          [:div {:class "mt-5"}
+            [:h2 {:id "document" :class "display-4 fw-bolder"} 
+              "Output"
+            ]
+            [:textarea 
+              {
+                :class "form-control"
+                :rows "20"
+                :value @parser-output
+                :on-change #(reset! parser-output (-> % .-target .-value))
+              }
+            ]
+          ]
+        ]
+      ]
+      [:div {:class "row"}
+        [:div {:class "col-12"}
+          [:div {:class "mt-5"}
+            [:h2 {:id "document" :class "display-4 fw-bolder"} 
+              "Interface"
+            ]
+          ]
+          [:button {:type "button" :class "btn btn-primary btn-lg" :on-click #(rfe/push-state ::chat)}
+            "Chat"
+          ]
+        ]
+      ]
+    ]
   )
 )
 
 (defn chat-page []
   [:div
     [:h2 "Chat"]
+    [:textarea
+     {
+       :class "form-control"
+       :rows "20"
+       :value @parser-output
+     }
+    ]
   ]
 )
 
