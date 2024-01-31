@@ -4,6 +4,7 @@
             [reitit.frontend.easy :as rfe]
             [reitit.coercion.spec :as rss]
             [spec-tools.data-spec :as ds]
+            [cljs.js :as js]
   )
 )
 
@@ -69,16 +70,33 @@
 )
 
 (defn chat-page []
-  [:div
-    [:h2 "Chat"]
-    [:textarea
-     {
-       :class "form-control"
-       :rows "20"
-       :value @parser-output
-     }
-    ]
-  ]
+  (try
+    (let [chat-json (js/JSON.parse @parser-output)]
+      (js/console.log "Parsed JSON:" chat-json)
+      (doseq [item chat-json]
+        (let [item-keys (js-keys item)]
+          (js/console.log "Keys for item: " item-keys)
+        )
+      )
+      [:div
+        [:h2 "Chat"]
+        (for [item chat-json :let [index (.indexOf chat-json item)]]
+          (doall
+            (println "rendering item: " item)
+            [:div {:key index :class "item"}
+              [:h1 index]
+              [:h3 (str "ID: " (.-id item))]
+              [:p (str "content " (.-content item))]
+            ]
+          )
+        )
+      ]
+    )
+    (catch :default e
+      (println "Failed to parse JSON:" (.-message e))
+      [:div {:class "alert alert-danger"} "An error occured while parsing chat data"]
+    )
+  )
 )
 
 (defonce match (r/atom nil))
