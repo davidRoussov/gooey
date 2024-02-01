@@ -81,7 +81,9 @@
 
 (defn chat-item [node]
   [:div
-    [:p (str (:content node))]
+    [:div
+      {:dangerouslySetInnerHTML {:__html (:content node)}}
+    ]
     (when-let [children (:children node)]
       (map chat-item children)
     )
@@ -122,12 +124,50 @@
 
 (defonce match (r/atom nil))
 
+(defn toggle-dark-mode [is-dark-mode]
+  (cond
+    is-dark-mode (->
+      (.-documentElement js/document)
+      (.setAttribute "data-bs-theme" "dark")
+    ) 
+    :else (->
+      (.-documentElement js/document)
+      (.setAttribute "data-bs-theme" "light")
+    ) 
+  )
+)
+
 (defn app []
-  [:div
-    (if @match
-      (let [view (:view (:data @match))]
-        [view @match]))
-  ]
+  (let [is-dark-mode (r/atom false)]
+    (fn []
+      (toggle-dark-mode @is-dark-mode)
+      [:div
+        [:div {:class "container my-5"}
+          [:div {:class "row"}
+            [:div {:class "col-12"}
+              [:div {:class "d-flex justify-content-end"}
+                [:div {:class "form-check form-switch form-check-reverse"}
+                  [:input {
+                    :type "checkbox"
+                    :class "form-check-input"
+                    :checked @is-dark-mode
+                    :on-change #(reset! is-dark-mode (-> % .-target .-checked))
+                    :id "darkModeSwitch"
+                  }]
+                  [:label {:class "form-check-label" :for "darkModeSwitch"}
+                    "Dark Mode"
+                  ]
+                ]
+              ]
+            ]
+          ]
+        ]
+        (if @match
+          (let [view (:view (:data @match))]
+            [view @match]))
+      ]
+    )
+  )
 )
 
 (def routes
