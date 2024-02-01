@@ -10,6 +10,17 @@
 
 (defonce parser-output (r/atom ""))
 
+(defn catch-all [params]
+  (let [path (:path params)]
+    (let [maybe-url (subs path 1)]
+      (js/console.log maybe-url)
+      (fn []
+        [:h1 "test"]
+      )
+    )
+  )
+)
+
 (defn home-page []
   (fn []
     [:div {:class "container my-5"}
@@ -172,8 +183,9 @@
 
 (def routes
   [
-   ["/" {:name ::home :view home-page}]
-   ["/chat" {:name ::chat :view chat-page}]
+    ["/"        {:conflicting true :name ::home :view home-page}]
+    ["/chat"    {:conflicting true :name ::chat :view chat-page}]
+    ["*"        {:conflicting true :name ::catch-all :view catch-all}]
   ]
 )
 
