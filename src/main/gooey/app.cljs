@@ -10,12 +10,31 @@
 
 (defonce parser-output (r/atom ""))
 
+(defn validate-url [url-string]
+  (try
+    (js/URL. url-string)
+    (catch :default e
+      (throw (js/Error. "Invalid URL"))
+    )
+  )
+)
+
 (defn catch-all [params]
   (let [path (:path params)]
     (let [maybe-url (subs path 1)]
       (js/console.log maybe-url)
-      (fn []
-        [:h1 "test"]
+      (try
+        (validate-url maybe-url)
+        (js/console.log "Valid URL provided")
+        (let [document get-document-by-url maybe-url]
+          (fn []
+            [:h1 "test"]
+            [:h1 document]
+          )
+          (catch :default e
+            (println "Did not detect url" (.-message e))
+          )
+        )
       )
     )
   )
