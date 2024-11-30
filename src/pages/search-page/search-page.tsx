@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { css } from '@emotion/react';
 import styled from '@emotion/styled';
 
@@ -11,6 +11,7 @@ const pageStyle = css`
 `;
 
 const SearchBar = styled.input`
+  display: block;
   width: 80%;
   max-width: 600px;
   padding: 1rem;
@@ -26,12 +27,29 @@ const SearchBar = styled.input`
 `;
 
 export const SearchPage = () => {
+  const [ text, setText ] = useState('');
+
+  const handleSearch = async () => {
+    if (window.electronAPI) {
+      const result = await window.electronAPI.getDataByDomain(text);
+      console.log('result', result);
+    }
+  };
+
   return (
     <div css={pageStyle}>
       <SearchBar
         type="text"
         placeholder="Search..."
+        value={text}
+        onChange={e => setText(e.target.value)}
       />
+      <button
+        type="button"
+        onClick={handleSearch}
+      >
+        Search
+      </button>
     </div>
   );
 };

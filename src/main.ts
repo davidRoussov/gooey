@@ -1,4 +1,4 @@
-import { app, BrowserWindow } from 'electron';
+import { app, BrowserWindow, ipcMain } from 'electron';
 import path from 'path';
 import started from 'electron-squirrel-startup';
 
@@ -28,6 +28,12 @@ const createWindow = () => {
   // Open the DevTools.
   mainWindow.webContents.openDevTools();
 };
+
+ipcMain.handle('get-data-by-domain', async (event, domain) => {
+  return {
+    foo: 'bar'
+  };
+});
 
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.
