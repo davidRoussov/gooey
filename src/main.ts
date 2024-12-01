@@ -27,6 +27,7 @@ const createTraditionalWindow = () => {
 const createModernWindow = () => {
   // Create the browser window.
   const mainWindow = new BrowserWindow({
+    frame: false,
     webPreferences: {
       preload: path.join(__dirname, 'preload.js'),
       nodeIntegration: true,
