@@ -2,12 +2,28 @@ import { app, BrowserWindow, ipcMain } from 'electron';
 import path from 'path';
 import started from 'electron-squirrel-startup';
 
+import { getWebAssetBundle } from './services/browser';
+
+let traditionalWindow;
+
 // Handle creating/removing shortcuts on Windows when installing/uninstalling.
 if (started) {
   app.quit();
 }
 
-const createWindow = () => {
+const createTraditionalWindow = () => {
+  traditionalWindow = new BrowserWindow({
+    show: false,
+    webPreferences: {
+      nodeIntegration: true,
+      contextIsolation: false
+    }
+  });
+
+  return traditionalWindow;
+};
+
+const createModernWindow = () => {
   // Create the browser window.
   const mainWindow = new BrowserWindow({
     width: 800,
@@ -30,15 +46,19 @@ const createWindow = () => {
 };
 
 ipcMain.handle('get-data-by-domain', async (event, domain) => {
+  const bundle = await getWebAssetBundle(traditionalWindow, domain);
+
+  console.log('bundle', bundle);
+
   return {
     foo: 'bar'
   };
 });
 
-// This method will be called when Electron has finished
-// initialization and is ready to create browser windows.
-// Some APIs can only be used after this event occurs.
-app.on('ready', createWindow);
+app.on('ready', () => {
+  const traditionalWindow = createTraditionalWindow();
+  const mainWindow = createModernWindow();
+});
 
 // Quit when all windows are closed, except on macOS. There, it's common
 // for applications and their menu bar to stay active until the user quits

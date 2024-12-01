@@ -27,7 +27,7 @@ const SearchBar = styled.input`
 `;
 
 export const SearchPage = () => {
-  const [ text, setText ] = useState('');
+  const [ text, setText ] = useState('https://news.ycombinator.com');
 
   const handleSearch = async () => {
     if (window.electronAPI) {
