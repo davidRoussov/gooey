@@ -3,6 +3,7 @@ import path from 'path';
 import started from 'electron-squirrel-startup';
 
 import { getWebAssetBundle } from './services/browser';
+import { normalizeWebAssetBundle } from './services/normalization';
 
 let traditionalWindow;
 
@@ -47,12 +48,7 @@ const createModernWindow = () => {
 
 ipcMain.handle('get-data-by-domain', async (event, domain) => {
   const bundle = await getWebAssetBundle(traditionalWindow, domain);
-
-  console.log('bundle', bundle);
-
-  return {
-    foo: 'bar'
-  };
+  return await normalizeWebAssetBundle(bundle, domain);
 });
 
 app.on('ready', () => {
