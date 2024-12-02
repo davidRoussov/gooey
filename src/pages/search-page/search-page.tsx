@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { css } from '@emotion/react';
+import { css } from '@emotion/css';
 import styled from '@emotion/styled';
 
 const pageStyle = css`
@@ -37,7 +37,7 @@ export const SearchPage = () => {
   };
 
   return (
-    <div css={pageStyle}>
+    <div className={pageStyle}>
       <SearchBar
         type="text"
         placeholder="Search..."
